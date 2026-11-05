@@ -1,6 +1,5 @@
 # Scehduling
-Given a list of items and constrains between their attributes, gives a schedule list putting them in an optimal order.
+Given a list of people who have certain items (each item can have properties, which can have constraints), outputs a list of the items in an order that minimises the loss of the constrains.
 
-An example use for this is if you have a bunch of homework you want done, but don't want multiple of the same subject next to each other, or any hard things next to any other hard things, etc. it will give you the list in an ordering that fills as much of the requirements as possible.
-
-Also allows for defining a list of "usages" which can have constraints. An example is if you have a grade of people, each studying some number of subjects and you want a list of all the subjects for exams allowing the greatest time available for each person between exams.
+An example for the confused:
+Imagine you have a grade full of people, each studying some number of subjects and you want a list of all the subjects for exams allowing the greatest time available for each person between exams.
