@@ -21,23 +21,37 @@ class Position(Property):
 
     def score(self, order):
         ln = len(order)-1
-        return f'{round(abs(self.pos - (order.index(self.it.nam)/ln))*ln)} positions off'
+        return f'{round(abs(self.pos - (order.index(self.it)/ln))*ln)} positions off'
 
 
 class Group(Property):
-    __slots__ = ['oths']
-    def __init__(self, nam, oths):
+    __slots__ = ['aparts']
+    def __init__(self, nam, aparts):
         super().__init__(nam)
-        self.oths = oths
-
-    @classmethod
-    def group_items(cls, schd, grpnam, names):
-        for nam in names:
-            schd.items[nam].add_prop(cls(grpnam, [n for n in names if n != nam]))
+        self.aparts = aparts
 
 
 class SeparateGroup(Group):
     __slots__ = []
 
     def score(self, order):
-        return ''
+        dist = None
+        mx = None
+        prev = None
+        for it in order:
+            if any(it.isknownas(i) for i in self.aparts):
+                if prev is not None:
+                    if mx is None or dist >= mx[0]:
+                        if mx is None or dist > mx[0]:
+                            mx = (dist, [(prev, it.nam)])
+                        else:
+                            mx[1].append((prev, it.nam))
+                prev = it.nam
+                dist = 0
+            elif dist is not None:
+                dist += 1
+        if mx is None:
+            return 'None found'
+        if len(mx[1]) == 1:
+            return f'Closest: {mx[1][0]} ({mx[0]} apart)'
+        return f'{len(mx[1])} closests: {mx[1]} (all {mx[0]} apart)'

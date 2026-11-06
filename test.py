@@ -23,11 +23,10 @@ for nam, *subjs in ReadCSV('test.csv'):
     schd.add_person(*subjs)
 # print(schd)
 
+schd['Maths1', 'Maths2'].aka('Maths')
 schd['Physics'].add_prop(Props.Position('Make physics last', 1))
-Props.SeparateGroup.group_items(schd, "Separate maths", ["Maths1", "Maths2"])
+schd.allknownas('Maths').add_prop(Props.SeparateGroup("Separate maths", ["Maths"]))
 print(schd)
+print()
 
-print("\nRunning scheduler...")
-result = schd.Run()
-print('\nScheduled order:\n'+'\n'.join('- '+i for i in result))
-print('\nStats:\n'+'\n'.join('* '+i for i in schd.Stats(result)))
+schd.JustWork()
