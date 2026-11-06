@@ -1,10 +1,11 @@
 from sched import Scheduler, ReadCSV, Props
 from random import random, randint
+FILE = 'test.csv'
 
 # Generate
 xtras = ['History', 'Software', 'Drama', 'Physics', 'Economics']
 maxcols = 6
-with open('test.csv', 'w+') as f:
+with open(FILE, 'w+') as f:
     for i in range(80):
         row = [f"Person{i}", 'English']
         if random() >= 0.2:
@@ -19,7 +20,7 @@ with open('test.csv', 'w+') as f:
 
 # Test generated
 schd = Scheduler()
-for nam, *subjs in ReadCSV('test.csv'):
+for nam, *subjs in ReadCSV(FILE):
     schd.add_person(*subjs)
 # print(schd)
 

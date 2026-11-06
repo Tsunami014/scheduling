@@ -14,9 +14,11 @@ class Item:
     def add_prop(self, prop):
         prop.it = self
         self.props.append(prop)
+        return self
 
     def aka(self, *nams):
         self.tags.extend(nams)
+        return self
 
     def isknownas(self, nam):
         return self.nam == nam or nam in self.tags
@@ -29,7 +31,7 @@ class Item:
 class ItemGroup:
     __slots__ = ['its']
     def __init__(self, *its):
-        self.its = list(its)
+        self.its = [i for i in its if i is not None]
 
     def __getattr__(self, nam):
         if nam in (
@@ -38,6 +40,7 @@ class ItemGroup:
             def fn(*args):
                 for it in self.its:
                     getattr(it, nam)(*args)
+                return self
             return fn
         super().__getattr__(nam)
 
@@ -55,7 +58,9 @@ class Scheduler:
             return None
         grp = ItemGroup()
         for it in k:
-            grp.its.append(self[it])
+            nit = self[it]
+            if nit is not None:
+                grp.its.append(nit)
         return grp
 
     def allknownas(self, nam):
@@ -105,7 +110,7 @@ class Scheduler:
 
     def __repr__(self): return str(self)
     def __str__(self):
-        items = '\n'.join("- "+repr(i) for i in self.items)
+        items = '\n'.join("- "+repr(i) for i in sorted(self.items, key=lambda x: x.nam))
         return f'<Scheduler with items:\n{items}\n>'
 
 def ReadCSV(fname):
