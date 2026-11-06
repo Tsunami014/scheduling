@@ -30,4 +30,5 @@ schd.allknownas('Maths').add_prop(Props.SeparateGroup("Separate maths", ["Maths"
 print(schd)
 print()
 
-schd.JustWork()
+res = schd.Run()
+schd.PrintStats(res, True)

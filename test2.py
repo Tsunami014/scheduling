@@ -39,4 +39,5 @@ for lvl in range(1, mxlvl+1):
 print(schd)
 print()
 
-schd.JustWork()
+res = schd.Run()
+schd.PrintStats(res, True)
