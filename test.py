@@ -1,13 +1,19 @@
 from sched import Scheduler, ReadCSV, Props
-from random import randint, choice
+from random import random, randint
 
 # Generate
-subjs = ['Maths1', 'Maths2', 'English', 'History', 'Software', 'Drama']
-maxcols = 5
+xtras = ['History', 'Software', 'Drama', 'Physics', 'Economics']
+maxcols = 6
 with open('test.csv', 'w+') as f:
-    for i in range(50):
-        row = [f"Person{i}"]
-        row += [choice(subjs) for _ in range(randint(1, 4))]
+    for i in range(80):
+        row = [f"Person{i}", 'English']
+        if random() >= 0.2:
+            row.append('Maths1')
+            if random() >= 0.7:
+                row.append('Maths2')
+        avxtras = xtras.copy()
+        while avxtras and len(row) < maxcols and (len(row) <= 2 or random() > 0.4):
+            row.append(avxtras.pop(randint(0, len(avxtras)-1)))
         row += ['' for _ in range(maxcols-len(row))]
         f.write(','.join(row)+'\n')
 
@@ -15,11 +21,13 @@ with open('test.csv', 'w+') as f:
 schd = Scheduler()
 for nam, *subjs in ReadCSV('test.csv'):
     schd.add_person(*subjs)
-schd.freeze()
+# print(schd)
 
-Props.SeparateGroup.group_items(schd, "Maths", ["Maths1", "Maths2"])
+schd['Physics'].add_prop(Props.Position('Make physics last', 1))
+Props.SeparateGroup.group_items(schd, "Separate maths", ["Maths1", "Maths2"])
 print(schd)
 
 print("\nRunning scheduler...")
 result = schd.Run()
-print('\nScheduled:\n'+'\n'.join('- '+i for i in result))
+print('\nScheduled order:\n'+'\n'.join('- '+i for i in result))
+print('\nStats:\n'+'\n'.join('* '+i for i in schd.Stats(result)))
